@@ -26,18 +26,19 @@ export class ProductController {
     });
   }
 
-  @Get('fetchDataProduct')
+  @Get('/fetchDataProduct')
   async fetchDataProduct() {
-    return await this.productService.fetchDataProduct();
+    return await this.connection.transaction((transactionManager) => {
+      return this.productService.fetchDataProduct(transactionManager);
+    });
   }
 
   @Get('/detail/:id')
   async detailProduct(@Param('id') id: number) {
-    return await this.connection.transaction((transactionManager) => {
-      return this.productService.detailProduct(transactionManager, id);
+    return await this.connection.transaction(async (transactionManager) => {
+      return await this.productService.detailProduct(transactionManager, id);
     });
   }
-
   @Post('/createProduct')
   async createProduct(@Body() createProductDto: CreateProductDto) {
     return await this.connection.transaction((transactionManager) => {

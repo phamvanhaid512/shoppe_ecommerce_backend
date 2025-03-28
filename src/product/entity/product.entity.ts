@@ -24,7 +24,19 @@ export class ProductEntity {
   price: number;
 
   @Column()
-  content: string;
+  rating: number;
+
+  @Column()
+  quantity: number;
+
+  @Column()
+  sold: number;
+
+  @Column()
+  view: number;
+
+  @Column()
+  content?: string;
 
   @Column()
   categoryId: number;

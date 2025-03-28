@@ -2,26 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { EntityManager } from 'typeorm';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 import { ProductRepository } from './repository/product.repository';
-
+import { ProductEntity } from './entity/product.entity';
 @Injectable()
 export class ProductService {
   constructor(private readonly productRepository: ProductRepository) {}
 
-  async fetchDataProduct() {
+  async fetchDataProduct(transactionManager: EntityManager) {
     try {
-      const fetchShopeeData = async () => {
-        const url = 'https://api-ecom.duthanhduoc.com/products';
-
-        const response = await axios.get(url, {
-          headers: {
-            'User-Agent':
-              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
-            Cookie: 'SPC_EC=your_cookie_here',
-          },
-        });
-
-        const product = response.data;
-      };
+      const result = this.productRepository.fetchData(transactionManager);
+      return { status: 200, data: result };
     } catch (error) {
       throw error;
     }
@@ -42,8 +31,7 @@ export class ProductService {
         transactionManager,
         id,
       );
-
-      return { status: 200, data: result };
+      return result; // Đảm bảo trả về đầy đủ dữ liệu
     } catch (error) {
       throw error;
     }
