@@ -1,12 +1,12 @@
 import { EntityManager, Repository, EntityRepository } from 'typeorm';
 import { UserEntity } from '../entity/user.entity';
-import { registerDto } from '../dto/register.dto';
+import { RegisterDto } from '../dto/register.dto';
 import bcrypt from 'bcryptjs'; // Thay vì 'bcrypt'
 import { InternalServerErrorException, Logger } from '@nestjs/common';
 
 @EntityRepository(UserEntity)
 export class AuthRepository extends Repository<UserEntity> {
-  async signUp(transactionManager: EntityManager, userDto: registerDto) {
+  async signUp(transactionManager: EntityManager, userDto: RegisterDto) {
     try {
       const { email, name, password } = userDto;
       const salts = await bcrypt.genSalt();
