@@ -31,4 +31,6 @@ export class OrdersEntity {
   @ManyToMany(() => ProductEntity, (product) => product.orders)
   @JoinTable({ name: 'oder_products' })
   products: ProductEntity[];
+
+
 }
