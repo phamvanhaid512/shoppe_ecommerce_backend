@@ -7,6 +7,7 @@ import { UserEntity } from './entity/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import bcrypt from 'bcryptjs'; // Thay vì 'bcrypt'
+import { LoginDto } from './dto/login.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -20,23 +21,26 @@ export class AuthService {
       transactionManager,
       userDto,
     );
-    return { statusCode: 200, data: result };
+    return { statusCode: 201, data: result };
   }
 
-  async validateUser(name: string, password: string): Promise<any> {
-    const user = await this.usersService.findOne(name);
+  async login(transactionManager: EntityManager, userDto: LoginDto) {
+    const { name, password } = userDto;
+    const user = await transactionManager.getRepository(UserEntity).findOne({
+      name,
+    });
     if (user && (await bcrypt.compare(password, user.password))) {
-      const { password, ...result } = user;
-      return result;
-    }
-    throw new UnauthorizedException('Invalid credentials');
-  }
+      const { password, ...payload } = user;
+      const accessToken = await this.jwtService.sign(payload);
 
-  async login(user: any) {
-    const payload = { name: user.name, sub: user.id };
-    return {
-      payload,
-      access_token: this.jwtService.sign(payload),
-    };
+      return {
+        statusCode: 201,
+        message: 'Đăng nhập thành công.',
+        data: {
+          data: payload,
+          accessToken: accessToken,
+        },
+      };
+    }
   }
 }

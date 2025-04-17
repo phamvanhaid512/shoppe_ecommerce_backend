@@ -19,10 +19,8 @@ export class AuthController {
   }
   @Post('login')
   async login(@Body() userDto: LoginDto) {
-    const user = await this.authService.validateUser(
-      userDto.name,
-      userDto.password,
-    );
-    return this.authService.login(user);
+    return await this.connection.transaction((transactionManager) => {
+      return this.authService.login(transactionManager, userDto);
+    });
   }
 }
