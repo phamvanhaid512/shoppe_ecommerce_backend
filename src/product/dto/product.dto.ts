@@ -6,4 +6,4 @@ export class CreateProductDto {
   categoryId: number;
 }
 
-export class UpdateProductDto extends CreateProductDto {}
+export class UpdateProductDto extends CreateProductDto { }

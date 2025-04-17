@@ -1,18 +1,20 @@
 import { CategoryEntity } from 'src/category/entities/category.entity';
 import { OrdersEntity } from 'src/orders/entity/order.entity';
+import { OrdersProductsEntity } from 'src/orders/entity/orders-products';
 import {
   Column,
   Entity,
   JoinColumn,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity('products')
 export class ProductEntity {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
   name: string;
@@ -47,4 +49,9 @@ export class ProductEntity {
   @ManyToOne(() => CategoryEntity, (category) => category.product)
   @JoinColumn({ name: 'categoy_id' })
   category: CategoryEntity;
+
+  @OneToMany(() => OrdersProductsEntity, (orderProduct) => orderProduct.product)
+  @JoinColumn({ name: 'product_id' })
+  ordersProduct: OrdersProductsEntity[];
+
 }

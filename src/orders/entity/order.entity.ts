@@ -6,10 +6,20 @@ import {
   JoinColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { OrdersProductsEntity } from './orders-products';
 
+export enum OrderStatus {
+  CART = 'CART',
+  PENDING = 'PENDING',
+  PAID = 'PAID',
+  SHIPPED = 'SHIPPED',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED'
+}
 @Entity('orders')
 export class OrdersEntity {
   @PrimaryGeneratedColumn()
@@ -21,16 +31,26 @@ export class OrdersEntity {
   @Column()
   userId: number;
 
-  @Column()
-  productId: number;
+  @Column({
+    type: 'enum',
+    enum: OrderStatus,
+    default: OrderStatus.CART
+  })
+  status: OrderStatus
 
-  @OneToMany(() => UserEntity, (user) => user.order)
-  @JoinColumn({ name: 'user_id' })
+  @Column({ default: 0 })
+  sum_total: number;
+
+  // @OneToMany(() => UserEntity, (user) => user.order)
+  // @JoinColumn({ name: 'user_id' })
+  // user: UserEntity;
+  @ManyToOne(() => UserEntity, (user) => user.order)
+  @JoinColumn({ name: 'user_id' }) // Đây mới là nơi tạo user_id
   user: UserEntity;
-
-  @ManyToMany(() => ProductEntity, (product) => product.orders)
-  @JoinTable({ name: 'oder_products' })
+  @ManyToMany(() => ProductEntity, (product) => product.id)
   products: ProductEntity[];
 
-
+  @OneToMany(() => OrdersProductsEntity, (ordersProduct) => ordersProduct.order, { cascade: true })
+  @JoinColumn({ name: 'order_id' })
+  ordersProduct: OrdersProductsEntity[];
 }

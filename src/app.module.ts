@@ -11,7 +11,10 @@ import { ProductEntity } from './product/entity/product.entity';
 import { OrdersEntity } from './orders/entity/order.entity';
 import { CategoryModule } from './category/category.module';
 import { CategoryEntity } from './category/entities/category.entity';
-
+import { LogoutTokenModule } from './logout-token/logout-token.module';
+import { LogoutTokenEntity } from './logout-token/logout-token.entity';
+import { OrdersModule } from './orders/orders.module';
+import { OrdersProductsEntity } from './orders/entity/orders-products';
 @Module({
   imports: [
     UserModule,
@@ -24,14 +27,16 @@ import { CategoryEntity } from './category/entities/category.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: 'shop_project',
-      entities: [UserEntity, ProductEntity, OrdersEntity, CategoryEntity], // Import các entity cần thiết
+      entities: [UserEntity, ProductEntity, OrdersEntity, CategoryEntity, LogoutTokenEntity, OrdersProductsEntity], // Import các entity cần thiết
       synchronize: process.env.DB_SYNCHRONIZE === 'true',
       logging: process.env.DB_LOGGING === 'true',
     }),
     ProductModule,
     CategoryModule,
+    LogoutTokenModule,
+    OrdersModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
