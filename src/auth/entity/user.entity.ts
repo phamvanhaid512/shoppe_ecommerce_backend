@@ -1,3 +1,5 @@
+import { ChatRoomMemberEntity } from 'src/chat/entities/chatRoomMember.entity';
+import { MessageEntity } from 'src/chat/entities/message.entity';
 import { OrdersEntity } from 'src/orders/entity/order.entity';
 import {
   Entity,
@@ -10,7 +12,7 @@ import {
 @Entity('users')
 export class UserEntity {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column({ unique: true })
   email: string;
@@ -26,4 +28,10 @@ export class UserEntity {
 
   @OneToMany(() => OrdersEntity, (order) => order.user)
   order: OrdersEntity[];
+
+  @OneToMany(() => MessageEntity, (message) => message.user)
+  message: MessageEntity[];
+
+  @OneToMany(() => ChatRoomMemberEntity, (chatRoomMember) => chatRoomMember.user)
+  chatRoomMember: ChatRoomMemberEntity[];
 }

@@ -23,13 +23,13 @@ export enum OrderStatus {
 @Entity('orders')
 export class OrdersEntity {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
   name: string;
 
-  @Column()
-  userId: number;
+  @Column({ default: 8 })
+  user_id: number;
 
   @Column({
     type: 'enum',

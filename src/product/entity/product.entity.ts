@@ -31,8 +31,11 @@ export class ProductEntity {
   @Column()
   quantity: number;
 
-  @Column()
+  @Column({ default: 0 })
   sold: number;
+
+  @Column({ default: 0 })
+  price_before_discount: number;
 
   @Column()
   view: number;

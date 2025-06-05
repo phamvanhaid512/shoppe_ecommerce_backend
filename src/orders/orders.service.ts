@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { CreateOrderDto, OrdersProductDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { EntityManager } from 'typeorm';
@@ -8,6 +8,52 @@ import { UserEntity } from 'src/auth/entity/user.entity';
 @Injectable()
 export class OrdersService {
   constructor(private readonly ordersRepository: OrdersRepository) { }
+  async savePayment(transactionManager: EntityManager, user: UserEntity, ordersProductDto: OrdersProductDto,id:number) {
+    try {
+      const savePayment = await this.ordersRepository.savePayment(transactionManager, user, ordersProductDto,id);
+      return { status: 201, data: savePayment }
+
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error; // ném lại luôn cho controller xử lý
+      }
+      Logger.error(error);
+      throw new InternalServerErrorException(
+        `Lỗi trong quá trình lưu thông tin thanh toán`,
+      );
+    }
+  }
+  async deleteAllCart(transactionManager: EntityManager, user: UserEntity) {
+
+    try {
+      await this.ordersRepository.deleteAllCart(transactionManager, user);
+      return { status: 200, data: "Xóa tất cả sản phẩm trong giỏ hàng thành công" };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error; // ném lại luôn cho controller xử lý
+      }
+      Logger.error(error);
+      throw new InternalServerErrorException(
+        `Lỗi trong quá trình xóa bài viết`,
+      );
+    }
+  }
+
+  async deleteCartItem(transactionManager: EntityManager, user: UserEntity, id: number) {
+    try {
+      await this.ordersRepository.deleteCartItem(transactionManager, user, id);
+      return { status: 200, data: "Xóa item giỏ hàng thành công" }
+
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error; // ném lại luôn cho controller xử lý
+      }
+      Logger.error(error);
+      throw new InternalServerErrorException(
+        `Lỗi trong quá trình xoa giấy bài viết`,
+      );
+    }
+  }
 
   async orderPage(transactionManager: EntityManager, user: UserEntity) {
     try {

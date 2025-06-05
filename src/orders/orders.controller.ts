@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Put } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto, OrdersProductDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -12,12 +12,35 @@ export class OrdersController {
     private readonly connection: Connection
   ) { }
 
+  @UseGuards(SessionGuard)
+  @Put('save-payment/:id')
+  async savePayment(@GetUser() user: UserEntity, @Body() ordersProductDto: OrdersProductDto, @Param('id') id: number) {
+    return await this.connection.transaction((transactionManager) => {
+      return this.ordersService.savePayment(transactionManager, user, ordersProductDto, id);
+    })
+  }
+
+  @UseGuards(SessionGuard)
+  @Delete('/delete-all-cart')
+  async deleteAllCart(@GetUser() user: UserEntity) {
+    return await this.connection.transaction((transactionManager) => {
+      return this.ordersService.deleteAllCart(transactionManager, user);
+    })
+  }
+
+  @UseGuards(SessionGuard)
+  @Delete('/delete-item-cart/:id')
+  async deleteCartItem(@GetUser() user: UserEntity, @Param('id') id: number) {
+    return await this.connection.transaction((transactionManager) => {
+      return this.ordersService.deleteCartItem(transactionManager, user, id);
+    })
+  }
 
   @UseGuards(SessionGuard)
   @Get('order-page')
-  async orderPage(@GetUser() user:UserEntity) {
+  async orderPage(@GetUser() user: UserEntity) {
     return await this.connection.transaction((transactionManager) => {
-      return this.ordersService.orderPage(transactionManager,user)
+      return this.ordersService.orderPage(transactionManager, user)
     })
   }
 

@@ -26,4 +26,4 @@ import { UserModule } from 'src/user/user.module';
   providers: [AuthService, JwtStrategy],
   exports: [JwtModule],
 })
-export class AuthModule {}
+export class AuthModule { }

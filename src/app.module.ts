@@ -15,6 +15,10 @@ import { LogoutTokenModule } from './logout-token/logout-token.module';
 import { LogoutTokenEntity } from './logout-token/logout-token.entity';
 import { OrdersModule } from './orders/orders.module';
 import { OrdersProductsEntity } from './orders/entity/orders-products';
+import { ChatModule } from './chat/chat.module';
+import { ChatRoomEntity } from './chat/entities/chatRoom.entity';
+import { ChatRoomMemberEntity } from './chat/entities/chatRoomMember.entity';
+import { MessageEntity } from './chat/entities/message.entity';
 @Module({
   imports: [
     UserModule,
@@ -27,16 +31,27 @@ import { OrdersProductsEntity } from './orders/entity/orders-products';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: 'shop_project',
-      entities: [UserEntity, ProductEntity, OrdersEntity, CategoryEntity, LogoutTokenEntity, OrdersProductsEntity], // Import các entity cần thiết
+      entities: [
+        UserEntity,
+        ProductEntity,
+        OrdersEntity,
+        CategoryEntity,
+        LogoutTokenEntity,
+        OrdersProductsEntity,
+        ChatRoomEntity,
+        ChatRoomMemberEntity,
+        MessageEntity,
+      ], // Import các entity cần thiết
       synchronize: process.env.DB_SYNCHRONIZE === 'true',
       logging: process.env.DB_LOGGING === 'true',
     }),
     ProductModule,
     CategoryModule,
     LogoutTokenModule,
-    OrdersModule
+    OrdersModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
